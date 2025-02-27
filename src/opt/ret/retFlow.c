@@ -227,6 +227,8 @@ Vec_Ptr_t * Abc_NtkMaxFlow( Abc_Ntk_t * pNtk, int fForward, int fVerbose )
     Abc_NtkMaxFlowMinCutUpdate( pNtk, vMinCut, fForward );
 
     // report the results
+    Log( "L = %6d. %s max-flow = %6d.  Min-cut = %6d.  ", 
+        Abc_NtkLatchNum(pNtk), fForward? "Forward " : "Backward", Flow, Vec_PtrSize(vMinCut) );
     if ( fVerbose )
     {
     printf( "L = %6d. %s max-flow = %6d.  Min-cut = %6d.  ", 

@@ -52,6 +52,7 @@ extern Abc_Ntk_t * Abc_NtkAttachBottom( Abc_Ntk_t * pNtkTop, Abc_Ntk_t * pNtkBot
 ***********************************************************************/
 int Abc_NtkRetimeMinArea( Abc_Ntk_t * pNtk, int fForwardOnly, int fBackwardOnly, int fUseOldNames, int fVerbose )
 {
+ //Log("Abc_NtkRetimeMinArea()");
     Abc_Ntk_t * pNtkTotal = NULL, * pNtkBottom;
     Vec_Int_t * vValuesNew = NULL, * vValues;
     int nLatches = Abc_NtkLatchNum(pNtk);
@@ -65,7 +66,7 @@ int Abc_NtkRetimeMinArea( Abc_Ntk_t * pNtk, int fForwardOnly, int fBackwardOnly,
     // perform forward retiming
     if ( !fBackwardOnly )
     {
-        if ( fOneFrame )
+        if ( fOneFrame ) // ???? HAN Bingjin: fOneFrame is 0 as defined ahead, the `else` statement is useless.  
             Abc_NtkRetimeMinAreaOne( pNtk, 1, fUseOldNames, fVerbose );
         else
             while ( Abc_NtkRetimeMinAreaOne( pNtk, 1, fUseOldNames, fVerbose ) );
@@ -205,7 +206,8 @@ void Abc_NtkUnmarkCone_rec( Abc_Obj_t * pObj, int fForward )
 
 ***********************************************************************/
 void Abc_NtkRetimeMinAreaPrepare( Abc_Ntk_t * pNtk, int fForward )
-{
+{   
+    Log("Abc_NtkRetimeMinAreaPrepare()");
     Vec_Ptr_t * vNodes;
     Abc_Obj_t * pObj, * pFanin;
     int i, k;

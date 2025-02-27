@@ -1,0 +1,11 @@
+rlibc
+read_aiger case1.aig
+strash
+ps
+retime -v
+ps
+strash
+balance
+map
+write_aiger case1_rt.aig
+

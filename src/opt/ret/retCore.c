@@ -46,6 +46,7 @@ abctime timeRetime = 0;
 ***********************************************************************/
 int Abc_NtkRetime( Abc_Ntk_t * pNtk, int Mode, int nDelayLim, int fForwardOnly, int fBackwardOnly, int fOneStep, int fUseOldNames, int fVerbose )
 {
+	Log("Abc_NtkRetime()");
     int nLatches = Abc_NtkLatchNum(pNtk);
     int nLevels  = Abc_NtkLevel(pNtk);
     int RetValue = 0;
@@ -94,6 +95,8 @@ int Abc_NtkRetime( Abc_Ntk_t * pNtk, int Mode, int nDelayLim, int fForwardOnly, 
         printf( "Unknown retiming option.\n" );
         break;
     }
+     Log( "Reduction in area = %3d. Reduction in delay = %3d. ", 
+            nLatches - Abc_NtkLatchNum(pNtk), nLevels - Abc_NtkLevel(pNtk) );
     if ( fVerbose )
     {
         printf( "Reduction in area = %3d. Reduction in delay = %3d. ", 

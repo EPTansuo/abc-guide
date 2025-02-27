@@ -49,6 +49,9 @@
 
 ABC_NAMESPACE_HEADER_START
 
+#define Log(format, ...) \
+  printf("\33[1;35m[%s:%d,%s] " format "\33[0m\n", \
+      __FILE__, __LINE__, __func__, ## __VA_ARGS__)
 
 // network types
 typedef enum { 

@@ -22094,6 +22094,7 @@ usage:
 ***********************************************************************/
 int Abc_CommandRetime( Abc_Frame_t * pAbc, int argc, char ** argv )
 {
+	Log("Abc_CommandRetime()");
     Abc_Ntk_t * pNtk, * pNtkRes;
     int c, nMaxIters;
     int fForward;
