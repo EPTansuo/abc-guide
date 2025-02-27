@@ -1,0 +1,9 @@
+rl and_or_3stage.blif
+st
+b
+pntk -nel
+wv before_retime.v
+#show
+retime
+pntk -nel
+wv after_retime.v

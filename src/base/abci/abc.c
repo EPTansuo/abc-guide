@@ -87,6 +87,7 @@ static int Abc_CommandPrintMffc              ( Abc_Frame_t * pAbc, int argc, cha
 static int Abc_CommandPrintFactor            ( Abc_Frame_t * pAbc, int argc, char ** argv );
 static int Abc_CommandPrintLevel             ( Abc_Frame_t * pAbc, int argc, char ** argv );
 static int Abc_CommandPrintSupport           ( Abc_Frame_t * pAbc, int argc, char ** argv );
+static int Abc_CommandPrintNetwork           ( Abc_Frame_t * pAbc, int argc, char ** argv );
 #ifdef ABC_USE_CUDD
 static int Abc_CommandPrintMint              ( Abc_Frame_t * pAbc, int argc, char ** argv );
 #endif
@@ -881,6 +882,7 @@ void Abc_Init( Abc_Frame_t * pAbc )
     Cmd_CommandAdd( pAbc, "Printing",     "print_factor",  Abc_CommandPrintFactor,      0 );
     Cmd_CommandAdd( pAbc, "Printing",     "print_level",   Abc_CommandPrintLevel,       0 );
     Cmd_CommandAdd( pAbc, "Printing",     "psu",           Abc_CommandPrintSupport,     0 );
+    Cmd_CommandAdd( pAbc, "Printing",     "pntk",          Abc_CommandPrintNetwork,     0 );
     Cmd_CommandAdd( pAbc, "Printing",     "print_supp",    Abc_CommandPrintSupport,     0 );
 #ifdef ABC_USE_CUDD
     Cmd_CommandAdd( pAbc, "Printing",     "print_mint",    Abc_CommandPrintMint,        0 );
@@ -2223,6 +2225,75 @@ usage:
     Abc_Print( -2, "\t-h    : print the command usage\n");
     return 1;
 }
+
+
+/**Function*************************************************************
+
+  Synopsis    [ Print some information of the network ]
+
+  Description []
+
+  SideEffects []
+
+  SeeAlso     []
+
+***********************************************************************/
+int Abc_CommandPrintNetwork( Abc_Frame_t * pAbc, int argc, char ** argv )
+{
+    // HBJ
+    Abc_Ntk_t * pNtk = Abc_FrameReadNtk(pAbc);
+    char c;
+    Extra_UtilGetoptReset();
+    int pPi = 1;
+    int pPo = 1;
+    int pNode = 0;
+    int pNet = 0;
+    int pLatch = 0;
+    
+    extern void Abc_NtkPrint( Abc_Ntk_t * pNtk , int pPi, int pPo, int pNode, int pNet, int pLatch);
+    while ( ( c = Extra_UtilGetopt( argc, argv, "ionelh" ) ) != EOF )
+    {
+        switch ( c )
+        {
+        case 'i':
+            pPi ^= 1;
+            break;
+        case 'o':
+            pPo ^= 1;
+            break;
+        case 'n':
+            pNode ^= 1;
+            break;
+        case 'e':
+            pNet ^= 1;
+            break;
+        case 'l':
+            pLatch ^= 1;
+            break;
+        case 'h':
+            goto usage;
+        default:
+            goto usage;
+        }
+    }
+    // Abc_Print( 1, "Network Information:\n");
+    // Abc_NtkShow( pNtk, 0, 0, 0, 0, 0 );
+    Abc_NtkPrint(pNtk, pPi, pPo, pNode, pNet, pLatch);
+    return 0;
+
+usage:
+    Abc_Print( -2, "usage: pntk [-ionelh]\n" );
+    Abc_Print( -2, "       Print some information of the network\n" );
+    Abc_Print( -2, "\t-i    : toggle printing of Pi information [default = %s].\n", pPi ? "yes": "no" );
+    Abc_Print( -2, "\t-o    : toggle printing of Po information [default = %s].\n", pPo ? "yes": "no" );
+    Abc_Print( -2, "\t-n    : toggle printing of Node information [default = %s].\n", pNode? "yes": "no" );
+    Abc_Print( -2, "\t-e    : toggle printing of Net information [default = %s].\n", pNet? "yes": "no" );
+    Abc_Print( -2, "\t-l    : toggle printing of Latch information [default = %s].\n", pLatch ? "yes": "no" );
+    Abc_Print( -2, "\t-h    : print the command usage\n");
+
+    return 1;
+}
+
 
 /**Function*************************************************************
 
