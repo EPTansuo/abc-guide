@@ -41,7 +41,7 @@ ABC_NAMESPACE_IMPL_START
 ////////////////////////////////////////////////////////////////////////
 
 extern void Abc_ShowFile( char * FileNameDot, int fKeepDot );
-static void Abc_ShowGetFileName( char * pName, char * pBuffer );
+static void Abc_ShowGetFileName( const char * pName, char * pBuffer );
 
 ////////////////////////////////////////////////////////////////////////
 ///                     FUNCTION DEFINITIONS                         ///
@@ -251,6 +251,70 @@ void Abc_NodeShowCut( Abc_Obj_t * pNode, int nNodeSizeMax, int nConeSizeMax )
 
 /**Function*************************************************************
 
+  Synopsis    [Visualizes AIG with choices and prefix.]
+
+  Description [Modified for show multiple graph]
+               
+  SideEffects []
+
+  SeeAlso     []
+
+***********************************************************************/
+void Abc_NtkShowWithPrefix( Abc_Ntk_t * pNtk0, const char* prefix, int fGateNames, int fSeq, int fUseReverse, int fKeepDot, int fAigIds){
+    FILE * pFile;
+    Abc_Ntk_t * pNtk;
+    Abc_Obj_t * pNode;
+    Vec_Ptr_t * vNodes;
+    int nBarBufs;
+    char FileNameDot[200];
+    int i;
+
+    assert( Abc_NtkIsStrash(pNtk0) || Abc_NtkIsLogic(pNtk0) );
+    if ( Abc_NtkIsStrash(pNtk0) && Abc_NtkGetChoiceNum(pNtk0) )
+    {
+        printf( "Temporarily visualization of AIGs with choice nodes is disabled.\n" );
+        return;
+    }
+    // create the file name
+    if(!prefix)
+        Abc_ShowGetFileName( pNtk0->pName, FileNameDot );
+    else 
+        Abc_ShowGetFileName( prefix, FileNameDot );
+    // check that the file can be opened
+    if ( (pFile = fopen( FileNameDot, "w" )) == NULL )
+    {
+        fprintf( stdout, "Cannot open the intermediate file \"%s\".\n", FileNameDot );
+        return;
+    }
+    fclose( pFile );
+
+
+    // convert to logic SOP
+    pNtk = Abc_NtkDup( pNtk0 );
+    if ( Abc_NtkIsLogic(pNtk) && !Abc_NtkHasMapping(pNtk) )
+        Abc_NtkToSop( pNtk, -1, ABC_INFINITY );
+
+    // collect all nodes in the network
+    vNodes = Vec_PtrAlloc( 100 );
+    Abc_NtkForEachObj( pNtk, pNode, i )
+        Vec_PtrPush( vNodes, pNode );
+    // write the DOT file
+    nBarBufs = pNtk->nBarBufs;
+    pNtk->nBarBufs = 0;
+    if ( fSeq )
+        Io_WriteDotSeq( pNtk, vNodes, NULL, FileNameDot, fGateNames, fUseReverse );
+    else
+        Io_WriteDotNtk( pNtk, vNodes, NULL, FileNameDot, fGateNames, fUseReverse, fAigIds );
+    pNtk->nBarBufs = nBarBufs;
+    Vec_PtrFree( vNodes );
+
+    // visualize the file 
+    Abc_ShowFile( FileNameDot, fKeepDot );
+    Abc_NtkDelete( pNtk );
+}
+
+/**Function*************************************************************
+
   Synopsis    [Visualizes AIG with choices.]
 
   Description []
@@ -404,7 +468,7 @@ void Abc_ShowFile( char * FileNameDot, int fKeepDot )
     {
         char CommandPs[1000];
         if ( !fKeepDot ) unlink( FileNameDot );
-        sprintf( CommandPs,  "%s %s &", pGsNameUnix, FileNamePs ); 
+        sprintf( CommandPs,  "%s --scale 4 %s &", pGsNameUnix, FileNamePs ); 
 #if defined(__wasm)
         if ( 1 )
 #else
@@ -429,7 +493,7 @@ void Abc_ShowFile( char * FileNameDot, int fKeepDot )
   SeeAlso     []
 
 ***********************************************************************/
-void Abc_ShowGetFileName( char * pName, char * pBuffer )
+void Abc_ShowGetFileName( const char * pName, char * pBuffer )
 {
     char * pCur;
     // creat the file name

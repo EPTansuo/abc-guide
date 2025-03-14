@@ -1,4 +1,4 @@
-rl and_or_3stage.blif
+rl retime.blif
 pntk -nel
 st
 pntk -nel

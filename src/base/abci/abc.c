@@ -3316,7 +3316,9 @@ int Abc_CommandShow( Abc_Frame_t * pAbc, int argc, char ** argv )
     int fFlopDep;
     int fKeepDot;
     int fAigIds;
+    const char *fPrefix;
     extern void Abc_NtkShow( Abc_Ntk_t * pNtk, int fGateNames, int fSeq, int fUseReverse, int fKeepDot, int fAigIds );
+    extern void Abc_NtkShowWithPrefix( Abc_Ntk_t * pNtk0, const char* fPrefix, int fGateNames, int fSeq, int fUseReverse, int fKeepDot, int fAigIds);
     extern void Abc_NtkShowFlopDependency( Abc_Ntk_t * pNtk );
 
     // set defaults
@@ -3326,8 +3328,9 @@ int Abc_CommandShow( Abc_Frame_t * pAbc, int argc, char ** argv )
     fFlopDep    = 0;
     fKeepDot    = 0;
     fAigIds     = 0;
+    fPrefix      = NULL;
     Extra_UtilGetoptReset();
-    while ( ( c = Extra_UtilGetopt( argc, argv, "rsgfdih" ) ) != EOF )
+    while ( ( c = Extra_UtilGetopt( argc, argv, "rsgfdip:h" ) ) != EOF )
     {
         switch ( c )
         {
@@ -3349,6 +3352,9 @@ int Abc_CommandShow( Abc_Frame_t * pAbc, int argc, char ** argv )
         case 'i':
             fAigIds ^= 1;
             break;
+        case 'p':
+            fPrefix = globalUtilOptarg;
+            break;
         default:
             goto usage;
         }
@@ -3363,7 +3369,7 @@ int Abc_CommandShow( Abc_Frame_t * pAbc, int argc, char ** argv )
     if ( fFlopDep )
         Abc_NtkShowFlopDependency( pNtk );
     else
-        Abc_NtkShow( pNtk, fGateNames, fSeq, fUseReverse, fKeepDot, fAigIds );
+        Abc_NtkShowWithPrefix( pNtk, fPrefix, fGateNames, fSeq, fUseReverse, fKeepDot, fAigIds );
     return 0;
 
 usage:
@@ -3373,16 +3379,17 @@ usage:
     Abc_Print( -2, "       \"dot.exe\" and \"gsview32.exe\" should be set in the paths\n" );
     Abc_Print( -2, "       (\"gsview32.exe\" may be in \"C:\\Program Files\\Ghostgum\\gsview\\\")\n" );
 #endif
-    Abc_Print( -2, "\t-s    : toggles visualization of sequential networks [default = %s].\n", fSeq? "yes": "no" );
-    Abc_Print( -2, "\t-r    : toggles ordering nodes in reverse order [default = %s].\n", fUseReverse? "yes": "no" );
-    Abc_Print( -2, "\t-g    : toggles printing gate names for mapped network [default = %s].\n", fGateNames? "yes": "no" );
-    Abc_Print( -2, "\t-f    : toggles visualizing flop dependency graph [default = %s].\n", fFlopDep? "yes": "no" );
-    Abc_Print( -2, "\t-d    : toggles keeping the .dot file used to produce the .ps file [default = %s].\n", fKeepDot? "yes": "no" );
-    Abc_Print( -2, "\t-i    : toggles using original AIG object IDs as node labels [default = %s].\n", fAigIds? "yes": "no" );
-    Abc_Print( -2, "\t-h    : print the command usage\n");
+    Abc_Print( -2, "\t-s          : toggles visualization of sequential networks [default = %s].\n", fSeq? "yes": "no" );
+    Abc_Print( -2, "\t-r          : toggles ordering nodes in reverse order [default = %s].\n", fUseReverse? "yes": "no" );
+    Abc_Print( -2, "\t-g          : toggles printing gate names for mapped network [default = %s].\n", fGateNames? "yes": "no" );
+    Abc_Print( -2, "\t-f          : toggles visualizing flop dependency graph [default = %s].\n", fFlopDep? "yes": "no" );
+    Abc_Print( -2, "\t-d          : toggles keeping the .dot file used to produce the .ps file [default = %s].\n", fKeepDot? "yes": "no" );
+    Abc_Print( -2, "\t-i          : toggles using original AIG object IDs as node labels [default = %s].\n", fAigIds? "yes": "no" );
+    Abc_Print( -2, "\t-p <prefix> : Add the prefix to the .dot/ps file to support multiple show\n" );
+    Abc_Print( -2, "\t-h          : print the command usage\n");
     return 1;
 }
-
+    
 /**Function*************************************************************
 
   Synopsis    []

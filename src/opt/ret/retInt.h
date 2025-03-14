@@ -27,6 +27,7 @@
 ////////////////////////////////////////////////////////////////////////
 
 #include "base/abc/abc.h"
+#include "misc/pntk/pntk.h"
 
 ABC_NAMESPACE_HEADER_START
 

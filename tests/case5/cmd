@@ -1,0 +1,14 @@
+rl add.blif
+#pntk -nel
+st
+#pntk -nel
+b
+#pntk 
+wv before_retime.v
+#show
+ps 
+retime
+#pntk 
+wv after_retime.v
+ps -l 
+#show -s -p finish

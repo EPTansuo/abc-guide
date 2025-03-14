@@ -82,6 +82,7 @@ int Abc_NtkRetime( Abc_Ntk_t * pNtk, int Mode, int nDelayLim, int fForwardOnly, 
             RetValue += Abc_NtkRetimeIncremental( pNtk, nDelayLim, 0, 1, fOneStep, fUseOldNames, fVerbose );
         break;
     case 5: // min-area + min-delay
+        Log("min-area + min-delay: ");
         RetValue  = Abc_NtkRetimeMinArea( pNtk, fForwardOnly, fBackwardOnly, fUseOldNames, fVerbose );
         if ( !fBackwardOnly )
             RetValue += Abc_NtkRetimeIncremental( pNtk, nDelayLim, 1, 1, 0, fUseOldNames, fVerbose );

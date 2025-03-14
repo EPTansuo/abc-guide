@@ -99,6 +99,10 @@ const char* Abc_NtkGetTypeName( Abc_Ntk_t * pNtk ){
 
 ***********************************************************************/
 void Abc_NtkPrint( Abc_Ntk_t * pNtk , int pPi, int pPo, int pNode, int pNet, int pLatch){
+    if(!pNtk || (size_t)pNtk == 1) { 
+        Abc_Print( 0, "Network is NULL\n" );
+        return;
+    }
     Abc_Print( 1, "Network %s:  PI = %d. PO = %d. Nodes = %d. Nets = %d. Latches= %d. Levels = %d.\n", 
         pNtk->pName, Abc_NtkPiNum(pNtk), Abc_NtkPoNum(pNtk), Abc_NtkNodeNum(pNtk), Abc_NtkNetNum(pNtk), 
         Abc_NtkLatchNum(pNtk), Abc_NtkLevel(pNtk) );

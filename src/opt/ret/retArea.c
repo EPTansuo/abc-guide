@@ -66,7 +66,7 @@ int Abc_NtkRetimeMinArea( Abc_Ntk_t * pNtk, int fForwardOnly, int fBackwardOnly,
     // perform forward retiming
     if ( !fBackwardOnly )
     {
-        if ( fOneFrame ) // ???? HAN Bingjin: fOneFrame is 0 as defined ahead, the `else` statement is useless.  
+        if ( fOneFrame ) // ???? HBJ: fOneFrame is 0 as defined ahead, the `else` statement is useless.  
             Abc_NtkRetimeMinAreaOne( pNtk, 1, fUseOldNames, fVerbose );
         else
             while ( Abc_NtkRetimeMinAreaOne( pNtk, 1, fUseOldNames, fVerbose ) );
@@ -113,6 +113,8 @@ Abc_Ntk_t * Abc_NtkRetimeMinAreaOne( Abc_Ntk_t * pNtk, int fForward, int fUseOld
 { 
     Abc_Ntk_t * pNtkNew = NULL;
     Vec_Ptr_t * vMinCut;
+    Log("Abc_NtkRetimeMinAreaOne Start:");
+    // Abc_NtkPrintAll(pNtk);
     // mark current latches and TFI(POs)
     Abc_NtkRetimeMinAreaPrepare( pNtk, fForward );
     // run the maximum forward flow
@@ -131,6 +133,12 @@ Abc_Ntk_t * Abc_NtkRetimeMinAreaOne( Abc_Ntk_t * pNtk, int fForward, int fUseOld
     // clean up
     Vec_PtrFree( vMinCut );
     Abc_NtkCleanMarkA( pNtk );
+
+    Log("Abc_NtkRetimeMinAreaOne End:");
+    // if( fForward)
+    //     Abc_NtkPrintAll(pNtk);
+    // else 
+    //     Abc_NtkPrintAll(pNtkNew);
     return pNtkNew;
 }
 
